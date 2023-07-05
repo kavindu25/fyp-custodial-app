@@ -20,18 +20,21 @@ contract CustodialServiceContractFactory {
         owner = msg.sender;
     }
 
+    //events
+    event AddOrganisation(address organisationOwner);
+
     //modifiers
     modifier onlyOwner() {
         require(msg.sender == owner, "Only owner can perform this operation");
         _;
     }
-    modifier onlyActiveUser(address user) {
-        require(organisations[user].isActive, "Organisation must be active to perform this operation");
-        _;
-    }
+    // modifier onlyActiveUser(address user) {
+    //     require(organisations[user].isActive, "Organisation must be active to perform this operation");
+    //     _;
+    // }
 
     // create new instance of CustodialServiceContract
-    function createCustodialService(address marketplaceOwner) public {
+    function createCustodialService(address marketplaceOwner) public onlyOwner() {
         CustodialServiceContract custodialService = new CustodialServiceContract(marketplaceOwner);
         custodialServices.push(address(custodialService));
     }

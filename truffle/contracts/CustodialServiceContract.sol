@@ -24,7 +24,7 @@ contract CustodialServiceContract {
     //events
     event AddUser(address newUser, address newWhitelistAddress);
     event DeactivateUser(address user);
-    event TopUpETH(uint256 amount, address sender);
+    event TopUpETH(uint256 depositedAmount, address sender);
     event TransferETH(address sender, address receiver,uint256 amount);
     event WithdrawETH(uint256 amount, address receiver);
     event WithDrawETHByOwner(uint256 amount, address receiver);
@@ -81,7 +81,6 @@ contract CustodialServiceContract {
         uint256 depositableAmount = amount - commissionFee;
         users[user].balance += depositableAmount;
         marketplaceBalance += depositableAmount;
-
         emit TopUpETH(depositableAmount, msg.sender);
     }
 
@@ -106,6 +105,7 @@ contract CustodialServiceContract {
     }
 
     // can be executed by the contract owner
+    // to do: put who can execute for every function 
     function withdrawETHByOwner(uint256 amount, address payable receiver) public payable onlyOwner() {
         //checks if the withdraw amount is less or equal than the excess amount of the contract
         require((address(this).balance - marketplaceBalance) >= amount );

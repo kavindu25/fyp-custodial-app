@@ -9,7 +9,7 @@ contract("CustodialServiceFactory", (accounts) => {
     });
 
     it("should create a new CustodialServiceContract instance.", async () => {
-        await custodialServiceFactory.createCustodialService();
+        await custodialServiceFactory.createCustodialService(accounts[0]);
         const deployedCustodialServices = await custodialServiceFactory.getDeployedCustodialServiceContracts();
         assert.equal(deployedCustodialServices.length, 1);
 
@@ -18,9 +18,9 @@ contract("CustodialServiceFactory", (accounts) => {
         assert.equal(owner, accounts[0] )
     });
 
-    it('should create multiple SimpleBank instances', async () => {
-        await custodialServiceFactory.createCustodialService();
-        await custodialServiceFactory.createCustodialService();
+    it('should create multiple CustodialServiceContract instances', async () => {
+        await custodialServiceFactory.createCustodialService(accounts[0]);
+        await custodialServiceFactory.createCustodialService(accounts[1]);
 
         const deployedCustodialServices = await custodialServiceFactory.getDeployedCustodialServiceContracts();
         assert.equal(deployedCustodialServices.length, 2);
