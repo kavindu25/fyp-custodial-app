@@ -11,7 +11,7 @@ contract CustodialServiceContract {
 
     address public owner;
     uint256 public marketplaceBalance;
-
+    //uint256 public excessBalance;
     mapping(address => User) private users;
 
     constructor(address marketplaceOwner) {
@@ -24,6 +24,7 @@ contract CustodialServiceContract {
     event TopUpETH(uint256 amount, address sender);
     event TransferETH(address sender, address receiver,uint256 amount);
     event WithdrawETH(uint256 amount, address user);
+    event WithDrawETHByOwner(uint256 amount, address receiver);
 
     //modifiers
     modifier onlyOwner() {
@@ -86,11 +87,12 @@ contract CustodialServiceContract {
         require(users[user].whitelistAddress == receiver);
         //require(users[user].whitelistAddress == receiver);
 
-        if(amount == users[user].balance){
-            receiver.transfer(address(this).balance);
-        }else {
-            receiver.transfer(amount);
-        }
+        receiver.transfer(amount);
+        // if(amount == users[user].balance){
+        //     receiver.transfer(address(this).balance);
+        // }else {
+        //     receiver.transfer(amount);
+        // }
 
         users[user].balance -= amount;
         marketplaceBalance -= amount;
@@ -99,6 +101,15 @@ contract CustodialServiceContract {
 
     }
 
+    // can be executed by the contract owner
+    function withdrawETHByOwner(uint256 amount, address payable receiver) public payable onlyOwner() {
+        //checks if the withdraw amount is less or equal than the excess amount of the contract
+        require((address(this).balance - marketplaceBalance) >= amount );
+        
+        receiver.transfer(amount);
+
+        emit WithDrawETHByOwner(amount, receiver);
+    }
     // seperate function for owner to withdraw with payable,onlyowner
     // contract funds > marketplcebalance, then withdraw fail
     // if there is an excessive amount other than the users balances
