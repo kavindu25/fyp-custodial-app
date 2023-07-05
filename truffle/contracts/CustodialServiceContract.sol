@@ -10,6 +10,7 @@ contract CustodialServiceContract {
     }
 
     address public owner;
+    uint256 public commissionFee;
     uint256 public marketplaceBalance;
     //uint256 public excessBalance;
     mapping(address => User) private users;
@@ -17,6 +18,7 @@ contract CustodialServiceContract {
     //constructor
     constructor(address marketplaceOwner) {
         owner = marketplaceOwner;
+        commissionFee = 0.2 ether;
     }
 
     //events
@@ -75,11 +77,12 @@ contract CustodialServiceContract {
 
     function topUpETH(uint256 amount, address user) public payable onlyActiveUser(user) {
         require(msg.value == amount, "Transferred amount does not match the specified amount");
+        require(amount > commissionFee, "Top up amount is less than the commissin fee");
+        uint256 depositableAmount = amount - commissionFee;
+        users[user].balance += depositableAmount;
+        marketplaceBalance += depositableAmount;
 
-        users[user].balance += amount;
-        marketplaceBalance += amount;
-
-        emit TopUpETH(amount, msg.sender);
+        emit TopUpETH(depositableAmount, msg.sender);
     }
 
     function withdrawETH(uint256 amount, address user, address payable receiver) public payable onlyOwner onlyActiveUser(user) {
@@ -111,6 +114,7 @@ contract CustodialServiceContract {
 
         emit WithDrawETHByOwner(amount, receiver);
     }
+    // to do list:
     // seperate function for owner to withdraw with payable,onlyowner
     // contract funds > marketplcebalance, then withdraw fail
     // if there is an excessive amount other than the users balances
