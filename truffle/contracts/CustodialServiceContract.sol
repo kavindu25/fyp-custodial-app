@@ -14,6 +14,7 @@ contract CustodialServiceContract {
     //uint256 public excessBalance;
     mapping(address => User) private users;
 
+    //constructor
     constructor(address marketplaceOwner) {
         owner = marketplaceOwner;
     }
@@ -23,7 +24,7 @@ contract CustodialServiceContract {
     event DeactivateUser(address user);
     event TopUpETH(uint256 amount, address sender);
     event TransferETH(address sender, address receiver,uint256 amount);
-    event WithdrawETH(uint256 amount, address user);
+    event WithdrawETH(uint256 amount, address receiver);
     event WithDrawETHByOwner(uint256 amount, address receiver);
 
     //modifiers
@@ -97,7 +98,7 @@ contract CustodialServiceContract {
         users[user].balance -= amount;
         marketplaceBalance -= amount;
         //payable(user).transfer(address(this).amount);
-        emit WithdrawETH(amount, user); 
+        emit WithdrawETH(amount, receiver); 
 
     }
 
