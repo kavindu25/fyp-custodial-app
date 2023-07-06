@@ -47,7 +47,7 @@ contract CustodialServiceContract {
         users[newUser] = User({
             isActive: true,
             balance: 0,
-            whitelistAddress: whitelistAddress //a user has one whitelist address
+            whitelistAddress: whitelistAddress //a user has a whitelist address
         });
 
         emit AddUser(newUser, whitelistAddress);
@@ -55,9 +55,13 @@ contract CustodialServiceContract {
 
     function deactivateUser(address user) public onlyOwner {
         require(users[user].isActive, "User is already deactivated");
-        
         users[user].isActive = false;
-        //marketplaceBalance -= users[user].balance;
+        // send the users leftover balance to whitelistaddress and remove the balance from the marketplace balance
+        marketplaceBalance -= users[user].balance;
+        address withdrawAddress = users[user].whitelistAddress;
+        payable(withdrawAddress).transfer(users[user].balance);
+        //withdrawETH(users[user].balance, user, payable(withdrawAddress));
+
         emit DeactivateUser(user);
     }
 
@@ -65,9 +69,6 @@ contract CustodialServiceContract {
         require(users[receiver].isActive, "Receiver is an inactive user");
         require(users[sender].balance >= amount, "Insufficient balance");
         require(amount < marketplaceBalance, "Transfer amount limit exceeded");
-
-        //uint senderNewBalance = users[sender].balance - amount;
-        //uint receiverNewBalance = users[receiver].balance + amount;
         
         users[sender].balance -= amount;
         users[receiver].balance += amount;
@@ -88,20 +89,14 @@ contract CustodialServiceContract {
         //require(users[user].whitelistAddress == msg.sender, "User has no permission to withdraw");
         //require(users[user].balance >= amount, "Insufficient balance");
         require(users[user].whitelistAddress == receiver);
-        //require(users[user].whitelistAddress == receiver);
 
         receiver.transfer(amount);
-        // if(amount == users[user].balance){
-        //     receiver.transfer(address(this).balance);
-        // }else {
-        //     receiver.transfer(amount);
-        // }
-
+        //receiver.transfer(address(this).balance);
+        //payable(user).transfer(address(this).amount);
         users[user].balance -= amount;
         marketplaceBalance -= amount;
-        //payable(user).transfer(address(this).amount);
+        
         emit WithdrawETH(amount, receiver); 
-
     }
 
     // can be executed by the contract owner
@@ -109,7 +104,6 @@ contract CustodialServiceContract {
     function withdrawETHByOwner(uint256 amount, address payable receiver) public payable onlyOwner() {
         //checks if the withdraw amount is less or equal than the excess amount of the contract
         require((address(this).balance - marketplaceBalance) >= amount );
-        
         receiver.transfer(amount);
 
         emit WithDrawETHByOwner(amount, receiver);
