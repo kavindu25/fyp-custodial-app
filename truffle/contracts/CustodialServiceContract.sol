@@ -60,7 +60,6 @@ contract CustodialServiceContract {
         marketplaceBalance -= users[user].balance;
         address withdrawAddress = users[user].whitelistAddress;
         payable(withdrawAddress).transfer(users[user].balance);
-        //withdrawETH(users[user].balance, user, payable(withdrawAddress));
 
         emit DeactivateUser(user);
     }
@@ -91,8 +90,6 @@ contract CustodialServiceContract {
         require(users[user].whitelistAddress == receiver);
 
         receiver.transfer(amount);
-        //receiver.transfer(address(this).balance);
-        //payable(user).transfer(address(this).amount);
         users[user].balance -= amount;
         marketplaceBalance -= amount;
         
@@ -101,6 +98,7 @@ contract CustodialServiceContract {
 
     // can be executed by the contract owner
     // to do: put who can execute for every function 
+    
     function withdrawETHByOwner(uint256 amount, address payable receiver) public payable onlyOwner() {
         //checks if the withdraw amount is less or equal than the excess amount of the contract
         require((address(this).balance - marketplaceBalance) >= amount );
@@ -108,11 +106,6 @@ contract CustodialServiceContract {
 
         emit WithDrawETHByOwner(amount, receiver);
     }
-    // to do list:
-    // seperate function for owner to withdraw with payable,onlyowner
-    // contract funds > marketplcebalance, then withdraw fail
-    // if there is an excessive amount other than the users balances
-    // fixed cut for topup function
 
     function getUserInfo(address user) public view returns(User memory) {
         return users[user];
@@ -123,3 +116,18 @@ contract CustodialServiceContract {
     }
 
 }
+
+// to do list:
+    // seperate function for owner to withdraw with payable,onlyowner
+    // contract funds > marketplcebalance, then withdraw fail
+    // if there is an excessive amount other than the users balances
+    // fixed cut for topup function
+
+//withdrawETH(users[user].balance, user, payable(withdrawAddress));
+//receiver.transfer(address(this).balance);
+//payable(user).transfer(address(this).amount);
+
+//withdrawETH func:
+// onlyowner or anyone ?
+
+//
