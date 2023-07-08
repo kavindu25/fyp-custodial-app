@@ -41,10 +41,12 @@
  * https://trufflesuite.com/docs/truffle/getting-started/using-the-truffle-dashboard/
  */
 
-// require('dotenv').config();
-// const { MNEMONIC, PROJECT_ID } = process.env;
+mnemonicPhrase =  "network dolphin distance champion cat someone twice vague gap assist hand devote"
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+//require('dotenv').config();
+//const { INFURA_API_KEY, MNEMONIC } = process.env;
+
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 module.exports = {
   /**
@@ -89,6 +91,26 @@ module.exports = {
     //   confirmations: 2,    // # of confirmations to wait between deployments. (default: 0)
     //   timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
     //   skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+    // },
+    sepolia: {
+      networkCheckTimeout: 200000,
+      //provider: () => new HDWalletProvider(MNEMONIC, INFURA_API_KEY),
+      provider: () => new HDWalletProvider(mnemonicPhrase, "https://sepolia.infura.io/v3/0c2f091c113048c2aa102f3668cb95e1", 3),
+      network_id: "11155111",
+      gas: 4465030,
+    },
+    // sepolia: {
+    //   provider: () =>
+    //     new HDWalletProvider({
+    //       mnemonic: {
+    //         phrase: mnemonicPhrase
+    //       },
+    //       providerOrUrl: "https://sepolia.infura.io/v3/0c2f091c113048c2aa102f3668cb95e1",
+    //       //numberOfAddresses: 1,
+    //       //shareNonce: true,
+    //       //derivationPath: "m/44'/1'/0'/0/"
+    //     }),
+    //     network_id: '11155111',
     // },
     //
     // Useful for private networks
