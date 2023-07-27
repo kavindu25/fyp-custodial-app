@@ -97,8 +97,6 @@ contract CustodialServiceContract {
     }
 
     // can be executed by the contract owner
-    // to do: put who can execute for every function 
-    
     function withdrawETHByOwner(uint256 amount, address payable receiver) public payable onlyOwner() {
         //checks if the withdraw amount is less or equal than the excess amount of the contract
         require((address(this).balance - marketplaceBalance) >= amount );
@@ -116,18 +114,5 @@ contract CustodialServiceContract {
     }
 
 }
-
-// to do list:
-    // seperate function for owner to withdraw with payable,onlyowner
-    // contract funds > marketplcebalance, then withdraw fail
-    // if there is an excessive amount other than the users balances
-    // fixed cut for topup function
-
-//withdrawETH(users[user].balance, user, payable(withdrawAddress));
-//receiver.transfer(address(this).balance);
-//payable(user).transfer(address(this).amount);
-
 //withdrawETH func:
-// onlyowner or anyone ?
-
-//
+// onlyowner ?
