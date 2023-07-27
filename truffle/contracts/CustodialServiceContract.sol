@@ -114,18 +114,5 @@ contract CustodialServiceContract {
     }
 
 }
-
-// to do list:
-    // seperate function for owner to withdraw with payable,onlyowner
-    // contract funds > marketplcebalance, then withdraw fail
-    // if there is an excessive amount other than the users balances
-    // fixed cut for topup function
-
-//withdrawETH(users[user].balance, user, payable(withdrawAddress));
-//receiver.transfer(address(this).balance);
-//payable(user).transfer(address(this).amount);
-
 //withdrawETH func:
-// onlyowner or anyone ?
-
-//
+// onlyowner ?
