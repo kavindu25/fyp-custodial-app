@@ -97,8 +97,6 @@ contract CustodialServiceContract {
     }
 
     // can be executed by the contract owner
-    // to do: put who can execute for every function 
-    
     function withdrawETHByOwner(uint256 amount, address payable receiver) public payable onlyOwner() {
         //checks if the withdraw amount is less or equal than the excess amount of the contract
         require((address(this).balance - marketplaceBalance) >= amount );
